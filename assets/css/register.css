@@ -1,0 +1,15 @@
+.container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: linear-gradient(to right, #108dc7, #ef8e38);
+}
+
+.form-wrapper {
+  width: 1000px;
+  max-width: 100%;
+}
+
+/*# sourceMappingURL=register.css.map */
