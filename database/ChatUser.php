@@ -10,6 +10,8 @@
         private $user_date_of_birth;
         private $user_status;
         private $user_created_on;
+        private $user_token;
+        private $user_connection_id;
 
         public $connect;
 
@@ -110,6 +112,21 @@
 
             return $user_data;
         }   
+        public function setUserToken($user_token) {
+            $this->user_token = $user_token;
+        }
+
+        public function getUserToken() {
+            return $this->user_token;
+        }
+
+        public function setUserConnectionID($user_connection_id) {
+            $this->user_connection_id = $user_connection_id;
+        }
+
+        public function getUserConnectionID() {
+            return $this->user_connection_id;
+        }
         
         public function save_data() {
             $query = "INSERT INTO `user`(`user_name`, `user_username`, `user_password`, `user_profile`,
@@ -132,15 +149,23 @@
         }
 
         public function updateUserStatus() {
-            $query = "UPDATE `user` SET `user_status` = ? WHERE `user_id` = ?";
+            $query = "UPDATE `user` SET `user_status` = ?, `user_token` = ? WHERE `user_id` = ?";
 
             $stmt = $this->connect->prepare($query);
-            $stmt->bind_param("ii", $this->user_status, $this->user_id);
+            $stmt->bind_param("isi", $this->user_status, $this->user_token, $this->user_id);
 
             if ($stmt->execute()) {
                 return true;
             }
             return false;
+        }
+
+        public function updateUserConnectionID() {
+            $query = 'UPDATE `user` SET `user_connection_id` = ? WHERE `user_token` = ?';
+            
+            $stmt = $this->connect->prepare($query);
+            $stmt->bind_param('is', $this->user_connection_id, $this->user_token);
+            return $stmt->execute();
         }
 
         public function updateUserInfo() {
@@ -162,7 +187,8 @@
                 "user_name" => $this->user_name,
                 "user_profile" => $this->user_profile,
                 "user_gender" => $this->user_gender,
-                "user_date_of_birth" => $this->user_date_of_birth
+                "user_date_of_birth" => $this->user_date_of_birth,
+                "user_token" => $this->user_token
             ];
         }
 

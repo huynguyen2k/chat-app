@@ -19,13 +19,17 @@
                 $user_object->setUserID($user_data["user_id"]);
                 $user_object->setUserStatus(1);
 
+                $user_token = md5(uniqid());
+                $user_object->setUserToken($user_token);
+
                 if ($user_object->updateUserStatus()) {
                     $_SESSION['user-data'] = [
                         "user_id" => $user_data["user_id"],
                         "user_name" => $user_data["user_name"],
                         "user_profile" => $user_data["user_profile"],
                         "user_gender" => $user_data["user_gender"],
-                        "user_date_of_birth" => $user_data["user_date_of_birth"]
+                        "user_date_of_birth" => $user_data["user_date_of_birth"],
+                        "user_token" => $user_token
                     ];
                     header("location: chatroom.php");
                 }

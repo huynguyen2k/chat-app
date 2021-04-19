@@ -14,7 +14,7 @@
         $user_object->setUserName($_POST['userName']);
         $user_object->setUserGender($_POST['userGender']);
         $user_object->setUserDateOfBirth($_POST['userDateOfBirth']);
-        
+        $user_object->setUserToken($_SESSION['user-data']['user_token']);
 
         if ($_FILES['userProfile']['name'] != '') {
             $fileExtension = pathinfo($_FILES['userProfile']['name'], PATHINFO_EXTENSION);
@@ -23,7 +23,7 @@
             move_uploaded_file($_FILES['userProfile']['tmp_name'], $file);
             $user_object->setUserProfile($file);
         } else {
-            $user_object->setUserProfile($_SESSION['user_profile']);
+            $user_object->setUserProfile($_SESSION['user-data']['user_profile']);
         }
 
         $user_object->updateUserInfo();

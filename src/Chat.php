@@ -1,7 +1,11 @@
 <?php
+
 namespace MyApp;
+
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
+
+require_once '../database/ChatUser.php';
 
 class Chat implements MessageComponentInterface {
     protected $clients;
@@ -14,6 +18,14 @@ class Chat implements MessageComponentInterface {
         // Store the new connection to send messages to later
         $this->clients->attach($conn);
 
+        $query_string = $conn->httpRequest->getUri()->getQuery();
+        parse_str($query_string, $query_array);
+
+        $user_object = new \ChatUser();
+        $user_object->setUserToken($query_array['token']);
+        $user_object->setUserConnectionID($conn->resourceId);
+        $user_object->updateUserConnectionID();
+        
         echo "New connection! ({$conn->resourceId})\n";
     }
 
