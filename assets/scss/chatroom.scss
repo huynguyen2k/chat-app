@@ -152,9 +152,53 @@
 
     &__body {
         height: 70vh;
+        padding: 16px;
         border-left: 1px solid #ccc;
         border-right: 1px solid #ccc;
+        overflow-y: scroll;
         
+        .message {
+            display: flex;
+            margin-bottom: 16px;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+
+            .message-wrap {
+                display: inline-block;
+                border-radius: 5px;
+                padding: 12px;
+                max-width: 70%;
+                color: white;
+                line-height: 1.4;
+            }
+
+            .message-content {
+                font-size: 1.3rem;
+                display: block;
+            }
+
+            .message-time {
+                display: block;
+                font-size: 1rem;
+                text-align: right;
+            }
+        }
+        .from-message {
+            justify-content: flex-end;
+            
+            .message-wrap {
+                background-color: dodgerblue;
+            }
+        }
+        .to-message {
+            justify-content: flex-start;
+            
+            .message-wrap {
+                background-color: #555;
+            }
+        }
     }
 }
 

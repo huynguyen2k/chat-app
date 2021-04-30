@@ -2,10 +2,12 @@
 
 namespace MyApp;
 
+use PrivateChat;
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 
-require_once '../database/ChatUser.php';
+require_once dirname(__DIR__) . '/database/ChatUser.php';
+require_once dirname(__DIR__) . '/database/PrivateChat.php';
 
 class Chat implements MessageComponentInterface {
     protected $clients;
@@ -34,12 +36,40 @@ class Chat implements MessageComponentInterface {
         echo sprintf('Connection %d sending message "%s" to %d other connection%s' . "\n"
             , $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
 
-        foreach ($this->clients as $client) {
-            if ($from !== $client) {
-                // The sender is not the receiver, send to each client connected
-                $client->send($msg);
+        $data = json_decode($msg, true);
+        if ($data['type'] === 'private-chat') {
+            $private_chat = new \PrivateChat();
+
+            $private_chat->setFromUserID($data['fromUserID']);
+            $private_chat->setToUserID($data['toUserID']);
+            $private_chat->setChatMessage($data['message']);
+
+            $timestamp = date('Y-m-d H:i:s');
+            $data['timestamp'] = $timestamp;
+            $private_chat->setTimestamp($timestamp);
+            $private_chat->setStatus(0);
+            $chat_message_id = $private_chat->save_data();
+            $data['chat_message_id'] = $chat_message_id;
+
+            $user_object = new \ChatUser();
+            $user_object->setUserID($data['fromUserID']);
+            $from_user_data = $user_object->get_user_data_by_id();
+            $user_object->setUserID($data['toUserID']);
+            $to_user_data = $user_object->get_user_data_by_id();
+
+            foreach ($this->clients as $client) {
+                if ($from == $client || $client->resourceId == $to_user_data['user_connection_id']) {
+                    $client->send(json_encode($data));
+                }
             }
         }
+
+        // foreach ($this->clients as $client) {
+        //     if ($from !== $client) {
+        //         // The sender is not the receiver, send to each client connected
+        //         $client->send($msg);
+        //     }
+        // }
     }
 
     public function onClose(ConnectionInterface $conn) {

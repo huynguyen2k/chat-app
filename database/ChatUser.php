@@ -205,6 +205,16 @@
             $records = $stmt->get_result();
             return $records->fetch_all(MYSQLI_ASSOC);
         }
+
+        public function get_user_data_by_id() {
+            $query = "SELECT * FROM `user` WHERE `user_id` = ?";
+
+            $stmt = $this->connect->prepare($query);
+            $stmt->bind_param('i', $this->user_id);
+            $stmt->execute();
+
+            return $stmt->get_result()->fetch_assoc();
+        }
     }
 
 ?>

@@ -1,5 +1,4 @@
 <?php
-
     class DBConnection {
 
         public function connect($host, $user, $password, $dbname) {

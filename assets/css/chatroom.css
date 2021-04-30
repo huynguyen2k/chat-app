@@ -136,8 +136,46 @@
 }
 .chat-area__body {
   height: 70vh;
+  padding: 16px;
   border-left: 1px solid #ccc;
   border-right: 1px solid #ccc;
+  overflow-y: scroll;
+}
+.chat-area__body .message {
+  display: flex;
+  margin-bottom: 16px;
+}
+.chat-area__body .message:last-child {
+  margin-bottom: 0;
+}
+.chat-area__body .message .message-wrap {
+  display: inline-block;
+  border-radius: 5px;
+  padding: 12px;
+  max-width: 70%;
+  color: white;
+  line-height: 1.4;
+}
+.chat-area__body .message .message-content {
+  font-size: 1.3rem;
+  display: block;
+}
+.chat-area__body .message .message-time {
+  display: block;
+  font-size: 1rem;
+  text-align: right;
+}
+.chat-area__body .from-message {
+  justify-content: flex-end;
+}
+.chat-area__body .from-message .message-wrap {
+  background-color: dodgerblue;
+}
+.chat-area__body .to-message {
+  justify-content: flex-start;
+}
+.chat-area__body .to-message .message-wrap {
+  background-color: #555;
 }
 
 .chat-form {
