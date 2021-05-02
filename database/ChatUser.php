@@ -215,6 +215,15 @@
 
             return $stmt->get_result()->fetch_assoc();
         }
-    }
 
+        public function get_user_id_by_token() {
+            $query = "SELECT `user_id` FROM `user` WHERE `user_token` = ?";
+
+            $stmt = $this->connect->prepare($query);
+            $stmt->bind_param('s', $this->user_token);
+            $stmt->execute();
+
+            return $stmt->get_result()->fetch_assoc()['user_id'];
+        }
+    }
 ?>

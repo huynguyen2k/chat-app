@@ -27,6 +27,16 @@ class Chat implements MessageComponentInterface {
         $user_object->setUserToken($query_array['token']);
         $user_object->setUserConnectionID($conn->resourceId);
         $user_object->updateUserConnectionID();
+
+        $user_id = $user_object->get_user_id_by_token();
+        $data = Array (
+            'user_id' => $user_id,
+            'user_status' => 1
+        );
+
+        foreach ($this->clients as $client) {
+            $client->send(json_encode($data));
+        }
         
         echo "New connection! ({$conn->resourceId})\n";
     }
@@ -45,7 +55,7 @@ class Chat implements MessageComponentInterface {
             $private_chat->setChatMessage($data['message']);
 
             $timestamp = date('Y-m-d H:i:s');
-            $data['timestamp'] = $timestamp;
+            $data['timestamp'] = date('d-m-Y H:i:s', strtotime($timestamp));
             $private_chat->setTimestamp($timestamp);
             $private_chat->setStatus(0);
             $chat_message_id = $private_chat->save_data();
@@ -73,6 +83,22 @@ class Chat implements MessageComponentInterface {
     }
 
     public function onClose(ConnectionInterface $conn) {
+        $queryString = $conn->httpRequest->getUri()->getQuery();
+        parse_str($queryString, $queryArray);
+
+        $user_object = new \ChatUser();
+        $user_object->setUserToken($queryArray['token']);
+        $user_id = $user_object->get_user_id_by_token();
+        
+        $data = Array (
+            'user_id' => $user_id,
+            'user_status' => 0
+        );
+
+        foreach ($this->clients as $client) {
+            $client->send(json_encode($data));
+        }
+
         // The connection is closed, remove it, as we can no longer send it messages
         $this->clients->detach($conn);
 

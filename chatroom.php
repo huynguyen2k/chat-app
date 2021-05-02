@@ -98,7 +98,7 @@ foreach ($all_user_data as $key => $value) {
                     </div>
                     <div class="profile__row">
                         <a href="edit.php" class="button button--small button--green">Chỉnh sửa</a>
-                        <a href="logout.php" class="button button--small button--red">Đăng xuất</a>
+                        <a href="logout.php" id="logout-btn" class="button button--small button--red">Đăng xuất</a>
                     </div>
                 </div>
                 <div class="user-list">
@@ -112,6 +112,14 @@ foreach ($all_user_data as $key => $value) {
     </div>
 
     <script>
+        const logoutBtn = document.getElementById('logout-btn');
+        const users = document.querySelectorAll('.user');
+        const chatRoomBody = document.getElementById('chat-room-body');
+        const fromUserID = document.querySelector('.profile').getAttribute('login-id');
+        const requestObject = {
+            from_user_id: fromUserID
+        };
+
         var conn = new WebSocket('ws://localhost:8080?token=<?php echo $user_token; ?>');
 
         conn.onopen = function(e) {
@@ -123,7 +131,21 @@ foreach ($all_user_data as $key => $value) {
             const loginID = document.querySelector('.profile').getAttribute('login-id');
             const chatArea = document.querySelector('.chat-area');
 
-            console.log(messageObject);
+            const data = JSON.parse(e.data);
+            if (data.user_id != undefined) {
+                console.log(data);
+                const userLogout = document.querySelector(`.user[user_id="${data.user_id}"]`);
+
+                if (userLogout === null) return;
+
+                if (data.user_status) {
+                    userLogout.querySelector('.user__status').classList.add('user__status--active');
+                } else {
+                    userLogout.querySelector('.user__status').classList.remove('user__status--active');
+                }
+
+                return;
+            }
             
             if (chatArea != null) {
                 if (loginID == messageObject.fromUserID) {
@@ -174,7 +196,6 @@ foreach ($all_user_data as $key => $value) {
                     user.appendChild(unreadElement);
                 }
             }
-
         };
 
         conn.onclose = function(e) {
@@ -188,9 +209,6 @@ foreach ($all_user_data as $key => $value) {
             httpRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
             httpRequest.send('update-message=' + JSON.stringify(requestObject));
         }
-
-        const users = document.querySelectorAll('.user');
-        const chatRoomBody = document.getElementById('chat-room-body');
 
         function createChatArea(userID, userImg, userName) {
             const element = document.createElement('div');
@@ -218,17 +236,12 @@ foreach ($all_user_data as $key => $value) {
             
             chatArea.forEach(item => {
                 item.remove();
-            })
+            });
         }
 
         function clearActiveUser() {
             users.forEach(item => item.classList.remove('user--active'));
         }
-
-        const fromUserID = document.querySelector('.profile').getAttribute('login-id');
-        const requestObject = {
-            from_user_id: fromUserID
-        };
 
         users.forEach(item => {
             item.addEventListener('click', function() {
@@ -252,6 +265,10 @@ foreach ($all_user_data as $key => $value) {
                 })
             
                 sendAjaxRequest(showMessages, 'action.php', 'fetch-messages');
+                const unreadMessage = this.querySelector('.user__unread-message');
+                if (unreadMessage != null) {
+                    unreadMessage.remove();
+                }
 
                 const chatForm = document.getElementById('chat-form');
                 chatForm.onsubmit = function(e) {
@@ -305,6 +322,13 @@ foreach ($all_user_data as $key => $value) {
             httpRequest.open('POST', url, true);
             httpRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
             httpRequest.send(requestName + '=' + JSON.stringify(requestObject));
+        }
+
+        logoutBtn.onclick = function(e) {
+            e.preventDefault();
+
+            conn.close();
+            window.location = 'logout.php';
         }
 
     </script>

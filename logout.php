@@ -10,7 +10,6 @@
         $user_object->updateUserStatus();
 
         unset($_SESSION['user-data']);
-
     }    
     header('location: index.php');
 ?>

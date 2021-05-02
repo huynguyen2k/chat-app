@@ -91,11 +91,20 @@
             return $this->connect->insert_id;
         }
 
-        public function update_chat_status() {
+        public function update_chat_status_by_message_id() {
             $query = "UPDATE `chat_message` SET `status` = ? WHERE `chat_message_id` = ?";
 
             $stmt = $this->connect->prepare($query);
             $stmt->bind_param('ii', $this->status, $this->chat_message_id);
+            $stmt->execute();
+        }
+
+        public function update_chat_status_by_user_id() {
+            $query = "UPDATE `chat_message` SET `status` = ?
+            WHERE  `status` = '0' AND `from_user_id` = ? AND `to_user_id` = ?";
+
+            $stmt = $this->connect->prepare($query);
+            $stmt->bind_param('iii', $this->status, $this->to_user_id, $this->from_user_id);
             $stmt->execute();
         }
     }
