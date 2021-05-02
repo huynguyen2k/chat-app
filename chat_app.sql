@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 18, 2021 at 12:42 PM
+-- Generation Time: May 02, 2021 at 04:22 PM
 -- Server version: 10.4.18-MariaDB
 -- PHP Version: 7.3.27
 
@@ -51,16 +51,10 @@ CREATE TABLE `user` (
   `user_gender` tinyint(1) NOT NULL,
   `user_date_of_birth` date NOT NULL,
   `user_status` tinyint(1) NOT NULL,
-  `user_created_on` datetime NOT NULL
+  `user_created_on` datetime NOT NULL,
+  `user_token` varchar(250) NOT NULL,
+  `user_connection_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `user`
---
-
-INSERT INTO `user` (`user_id`, `user_name`, `user_username`, `user_password`, `user_profile`, `user_gender`, `user_date_of_birth`, `user_status`, `user_created_on`) VALUES
-(8, 'Huy Nguyễn', 'huynguyen', 'e10adc3949ba59abbe56e057f20f883e', 'assets/images/2a99e84a9e4ae21cd1fb7916cdc6abc7.jpg', 1, '2000-02-28', 0, '2021-04-18 15:26:44'),
-(9, 'test1', 'test1', 'e10adc3949ba59abbe56e057f20f883e', 'assets/images/user.png', 1, '2000-12-31', 1, '2021-04-18 15:29:01');
 
 --
 -- Indexes for dumped tables
@@ -87,13 +81,13 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `chat_message`
 --
 ALTER TABLE `chat_message`
-  MODIFY `chat_message_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `chat_message_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
