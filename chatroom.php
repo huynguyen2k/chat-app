@@ -102,6 +102,12 @@ foreach ($all_user_data as $key => $value) {
                     </div>
                 </div>
                 <div class="user-list">
+                    <div class="group-chat" id="group-chat">
+                        <div class="group-chat__image">
+                            <img src="assets/images/group-icon.png" alt="Group icon">
+                        </div>
+                        <span class="group-chat__name">Group chat</span>
+                    </div>
                     <?php echo $userList ?>
                 </div>
             </div>
@@ -116,6 +122,9 @@ foreach ($all_user_data as $key => $value) {
         const users = document.querySelectorAll('.user');
         const chatRoomBody = document.getElementById('chat-room-body');
         const fromUserID = document.querySelector('.profile').getAttribute('login-id');
+        const groupChat = document.getElementById('group-chat');
+
+
         const requestObject = {
             from_user_id: fromUserID
         };
@@ -127,16 +136,15 @@ foreach ($all_user_data as $key => $value) {
         };
 
         conn.onmessage = function(e) {
-            const messageObject = JSON.parse(e.data);
-            const loginID = document.querySelector('.profile').getAttribute('login-id');
-            const chatArea = document.querySelector('.chat-area');
-
             const data = JSON.parse(e.data);
-            if (data.user_id != undefined) {
-                console.log(data);
+
+            if (data.type === 'update-user-status') {
+
                 const userLogout = document.querySelector(`.user[user_id="${data.user_id}"]`);
 
-                if (userLogout === null) return;
+                if (userLogout === null) {
+                    return;
+                }
 
                 if (data.user_status) {
                     userLogout.querySelector('.user__status').classList.add('user__status--active');
@@ -144,34 +152,45 @@ foreach ($all_user_data as $key => $value) {
                     userLogout.querySelector('.user__status').classList.remove('user__status--active');
                 }
 
-                return;
-            }
-            
-            if (chatArea != null) {
-                if (loginID == messageObject.fromUserID) {
-                    const messageArray = [
-                        {
-                            from_user_id: messageObject.fromUserID,
-                            to_user_id: messageObject.toUserID,
-                            chat_message: messageObject.message,
-                            time: messageObject.timestamp
+
+            } else if (data.type === 'private-chat') {
+                const chatArea = document.querySelector('.chat-area');
+                const loginID = document.querySelector('.profile').getAttribute('login-id');
+
+                if (chatArea != null) {
+                    if (loginID == data.fromUserID) {
+                        const messageArray = [{
+                            from_user_id: data.fromUserID,
+                            to_user_id: data.toUserID,
+                            chat_message: data.message,
+                            time: data.timestamp
+                        }];
+                        showMessages(messageArray);
+                    } else if (loginID == data.toUserID &&
+                        chatArea.getAttribute('user-id') == data.fromUserID) {
+                        const messageArray = [{
+                            from_user_id: data.fromUserID,
+                            to_user_id: data.toUserID,
+                            chat_message: data.message,
+                            time: data.timestamp
+                        }];
+                        showMessages(messageArray);
+                        updateMessageAlreadyRead(data);
+                    } else {
+                        const user = document.querySelector(`.user[user_id="${data.fromUserID}"]`);
+                        let unreadMessage = user.querySelector('.user__unread-message');
+
+                        if (unreadMessage != null) {
+                            unreadMessage.innerHTML = parseInt(unreadMessage.innerHTML) + 1;
+                        } else {
+                            const unreadElement = document.createElement('div');
+                            unreadElement.classList.add('user__unread-message');
+                            unreadElement.innerHTML = '1';
+                            user.appendChild(unreadElement);
                         }
-                    ];
-                    showMessages(messageArray);
-                } else if (loginID == messageObject.toUserID &&
-                chatArea.getAttribute('user-id') == messageObject.fromUserID) {
-                    const messageArray = [
-                        {
-                            from_user_id: messageObject.fromUserID,
-                            to_user_id: messageObject.toUserID,
-                            chat_message: messageObject.message,
-                            time: messageObject.timestamp
-                        }
-                    ];
-                    showMessages(messageArray);
-                    updateMessageAlreadyRead(messageObject);
+                    }
                 } else {
-                    const user = document.querySelector(`.user[user_id="${messageObject.fromUserID}"]`);
+                    const user = document.querySelector(`.user[user_id="${data.fromUserID}"]`);
                     let unreadMessage = user.querySelector('.user__unread-message');
 
                     if (unreadMessage != null) {
@@ -183,19 +202,43 @@ foreach ($all_user_data as $key => $value) {
                         user.appendChild(unreadElement);
                     }
                 }
-            } else {
-                const user = document.querySelector(`.user[user_id="${messageObject.fromUserID}"]`);
-                let unreadMessage = user.querySelector('.user__unread-message');
+            } else if (data.type === 'group-chat') {
+                const chatArea = document.querySelector('.chat-area');
+                const loginID = document.querySelector('.profile').getAttribute('login-id');
 
-                if (unreadMessage != null) {
-                    unreadMessage.innerHTML = parseInt(unreadMessage.innerHTML) + 1;
+                if (chatArea != null) {
+                    const message = [data];
+
+                    if (loginID == data.user_id || chatArea.getAttribute('user-id') == 'null') {
+                        showGroupChatMessages(message);
+                    } else {
+                        const groupChat = document.getElementById('group-chat');
+                        let unreadMessage = groupChat.querySelector('.group-chat__unread-message');
+
+                        if (unreadMessage != null) {
+                            unreadMessage.innerHTML = parseInt(unreadMessage.innerHTML) + 1;
+                        } else {
+                            const unreadElement = document.createElement('div');
+                            unreadElement.classList.add('group-chat__unread-message');
+                            unreadElement.innerHTML = '1';
+                            groupChat.appendChild(unreadElement);
+                        }
+                    }
                 } else {
-                    const unreadElement = document.createElement('div');
-                    unreadElement.classList.add('user__unread-message');
-                    unreadElement.innerHTML = '1';
-                    user.appendChild(unreadElement);
+                    const groupChat = document.getElementById('group-chat');
+                    let unreadMessage = groupChat.querySelector('.group-chat__unread-message');
+
+                    if (unreadMessage != null) {
+                        unreadMessage.innerHTML = parseInt(unreadMessage.innerHTML) + 1;
+                    } else {
+                        const unreadElement = document.createElement('div');
+                        unreadElement.classList.add('group-chat__unread-message');
+                        unreadElement.innerHTML = '1';
+                        groupChat.appendChild(unreadElement);
+                    }
                 }
             }
+
         };
 
         conn.onclose = function(e) {
@@ -213,8 +256,9 @@ foreach ($all_user_data as $key => $value) {
         function createChatArea(userID, userImg, userName) {
             const element = document.createElement('div');
             element.classList.add('chat-area');
+
             element.setAttribute('user-id', userID);
-            
+
             let html = `
                 <div class="chat-area__header">
                     <img src="${userImg}" alt="User icon">
@@ -233,7 +277,7 @@ foreach ($all_user_data as $key => $value) {
 
         function clearChatArea() {
             chatArea = document.querySelectorAll('.chat-area');
-            
+
             chatArea.forEach(item => {
                 item.remove();
             });
@@ -243,47 +287,100 @@ foreach ($all_user_data as $key => $value) {
             users.forEach(item => item.classList.remove('user--active'));
         }
 
-        users.forEach(item => {
-            item.addEventListener('click', function() {
-                let toUserID = this.getAttribute('user_id');
-                let userName = this.querySelector('.user__name').innerHTML;
-                let userImg = this.querySelector('img').getAttribute('src');
-                let userID = this.getAttribute('user_id');
-                const chatAreaElement = createChatArea(userID, userImg, userName);
-                
-                requestObject.to_user_id = toUserID;
+        function clearActiveGroupChat() {
+            groupChat.classList.remove('group-chat--active');
+        }
 
-                clearChatArea();
+        function showPrivateChatArea() {
+            let toUserID = this.getAttribute('user_id');
+            let userName = this.querySelector('.user__name').innerHTML;
+            let userImg = this.querySelector('img').getAttribute('src');
+            let userID = this.getAttribute('user_id');
+
+            const chatAreaElement = createChatArea(userID, userImg, userName);
+
+            requestObject.to_user_id = toUserID;
+
+            clearChatArea();
+            clearActiveUser();
+            clearActiveGroupChat();
+
+            this.classList.add('user--active');
+            chatRoomBody.appendChild(chatAreaElement);
+            let closeBtn = chatAreaElement.querySelector('.close-btn');
+
+            closeBtn.addEventListener('click', function() {
                 clearActiveUser();
-                this.classList.add('user--active');
-                chatRoomBody.appendChild(chatAreaElement);
-                let closeBtn = chatAreaElement.querySelector('.close-btn');
+                this.closest('.chat-area').remove();
+            })
 
-                closeBtn.addEventListener('click', function() {
-                    clearActiveUser();
-                    this.closest('.chat-area').remove();
-                })
-            
-                sendAjaxRequest(showMessages, 'action.php', 'fetch-messages');
-                const unreadMessage = this.querySelector('.user__unread-message');
-                if (unreadMessage != null) {
-                    unreadMessage.remove();
-                }
+            sendAjaxRequest(showMessages, 'action.php', 'fetch-messages');
+            const unreadMessage = this.querySelector('.user__unread-message');
+            if (unreadMessage != null) {
+                unreadMessage.remove();
+            }
 
-                const chatForm = document.getElementById('chat-form');
-                chatForm.onsubmit = function(e) {
-                    e.preventDefault();
-                    const data = {
-                        fromUserID: requestObject.from_user_id,
-                        toUserID: requestObject.to_user_id,
-                        message: document.getElementById('chat-message').value,
-                        type: 'private-chat'
-                    };
-                    conn.send(JSON.stringify(data));
-                    this.querySelector('#chat-message').value = '';
-                }
+            const chatForm = document.getElementById('chat-form');
+
+            chatForm.onsubmit = function(e) {
+                e.preventDefault();
+                const data = {
+                    fromUserID: requestObject.from_user_id,
+                    toUserID: requestObject.to_user_id,
+                    message: document.getElementById('chat-message').value,
+                    type: 'private-chat'
+                };
+                conn.send(JSON.stringify(data));
+                this.querySelector('#chat-message').value = '';
+            }
+        }
+
+        function showGroupChatArea() {
+            let name = this.querySelector('.group-chat__name').innerHTML;
+            let image = this.querySelector('img').getAttribute('src');
+
+            const chatAreaElement = createChatArea(null, image, name);
+
+            clearChatArea();
+            clearActiveUser();
+
+            this.classList.add('group-chat--active');
+            chatRoomBody.appendChild(chatAreaElement);
+
+            let closeBtn = chatAreaElement.querySelector('.close-btn');
+
+            closeBtn.addEventListener('click', function() {
+                clearActiveGroupChat();
+                this.closest('.chat-area').remove();
             });
+
+            sendAjaxRequest(showGroupChatMessages, 'action.php', 'fetch-group-chat-messages');
+
+            const unreadMessage = this.querySelector('.group-chat__unread-message');
+            if (unreadMessage != null) {
+                unreadMessage.remove();
+            }
+
+            const chatForm = document.getElementById('chat-form');
+
+            chatForm.onsubmit = function(e) {
+                e.preventDefault();
+                const data = {
+                    user_id: requestObject.from_user_id,
+                    message: document.getElementById('chat-message').value,
+                    type: 'group-chat'
+                };
+                conn.send(JSON.stringify(data));
+                this.querySelector('#chat-message').value = '';
+            }
+        }
+
+        groupChat.onclick = showGroupChatArea;
+
+        users.forEach(item => {
+            item.addEventListener('click', showPrivateChatArea);
         });
+
 
         function createMessage(messageObject) {
             const messageElement = document.createElement('div');
@@ -312,6 +409,45 @@ foreach ($all_user_data as $key => $value) {
             chatBodyElement.scrollTo(0, 100000);
         }
 
+        function createGroupChatMessage(message) {
+            let username = '';
+            const messageElement = document.createElement('div');
+            messageElement.setAttribute('class', 'message');
+
+            if (message.user_id == requestObject.from_user_id) {
+                messageElement.classList.add('from-message');
+
+                messageElement.innerHTML = `
+                <p class="message-wrap">
+                    <span class="message-content">${message.message}</span>
+                    <span class="message-time">${message.date}</span>
+                </p>`;
+                
+            } else {
+                username = document.querySelector(`.user[user_id="${message.user_id}"] .user__name`)
+                .innerHTML;
+
+                messageElement.classList.add('to-message');
+                messageElement.innerHTML = `
+                <p class="message-wrap">
+                    <span class="user-chat">${username}</span>
+                    <span class="message-content">${message.message}</span>
+                    <span class="message-time">${message.date}</span>
+                </p>`;
+            }
+
+            return messageElement;
+        }
+
+        function showGroupChatMessages(messagesArray) {
+            const chatBodyElement = document.querySelector('.chat-area__body');
+
+            for (let message of messagesArray) {
+                chatBodyElement.appendChild(createGroupChatMessage(message));
+            }
+            chatBodyElement.scrollTo(0, 100000);
+        }
+
         function sendAjaxRequest(callback, url, requestName) {
             httpRequest = new XMLHttpRequest();
             httpRequest.onreadystatechange = function() {
@@ -328,9 +464,10 @@ foreach ($all_user_data as $key => $value) {
             e.preventDefault();
 
             conn.close();
-            window.location = 'logout.php';
+            setTimeout(function() {
+                window.location = 'logout.php';
+            }, 200);
         }
-
     </script>
 </body>
 

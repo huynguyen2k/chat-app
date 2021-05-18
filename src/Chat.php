@@ -8,6 +8,7 @@ use Ratchet\ConnectionInterface;
 
 require_once dirname(__DIR__) . '/database/ChatUser.php';
 require_once dirname(__DIR__) . '/database/PrivateChat.php';
+require_once dirname(__DIR__) . '/database/ChatRoom.php';
 
 class Chat implements MessageComponentInterface {
     protected $clients;
@@ -30,6 +31,7 @@ class Chat implements MessageComponentInterface {
 
         $user_id = $user_object->get_user_id_by_token();
         $data = Array (
+            'type' => 'update-user-status',
             'user_id' => $user_id,
             'user_status' => 1
         );
@@ -47,6 +49,7 @@ class Chat implements MessageComponentInterface {
             , $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
 
         $data = json_decode($msg, true);
+
         if ($data['type'] === 'private-chat') {
             $private_chat = new \PrivateChat();
 
@@ -73,6 +76,22 @@ class Chat implements MessageComponentInterface {
                 }
             }
         }
+        else if ($data['type'] === 'group-chat') {
+            $group_chat = new \ChatRoom();
+
+            $group_chat->setUserId($data['user_id']);
+            $group_chat->setMessage($data['message']);
+
+            $timestamp = date('Y-m-d H:i:s');
+            $data['date'] = date('d-m-Y H:i:s', strtotime($timestamp));
+            $group_chat->setCreatedOn($timestamp);
+
+            $check = $group_chat->save_data();
+
+            foreach ($this->clients as $client) {
+                $client->send(json_encode($data));
+            }
+        }
 
         // foreach ($this->clients as $client) {
         //     if ($from !== $client) {
@@ -91,6 +110,7 @@ class Chat implements MessageComponentInterface {
         $user_id = $user_object->get_user_id_by_token();
         
         $data = Array (
+            'type' => 'update-user-status',
             'user_id' => $user_id,
             'user_status' => 0
         );
