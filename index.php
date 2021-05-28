@@ -35,10 +35,10 @@
                 }
 
             } else {
-                $error_message = '<p class="form-control__message form-control__message--error">Mật khẩu không hợp lệ</p>';
+                $error_message = '<p class="form-control__message form-control__message--error">Your password is not valid</p>';
             }
         } else {
-            $error_message = '<p class="form-control__message form-control__message--error">Tài khoản không hợp lệ</p>';
+            $error_message = '<p class="form-control__message form-control__message--error">Your username is not valid</p>';
         }
     }
 

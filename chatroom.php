@@ -76,20 +76,20 @@ foreach ($all_user_data as $key => $value) {
                         </p>
                     </div>
                     <div class="profile__row">
-                        <p class="profile__text">Giới tính:
+                        <p class="profile__text">Gender:
                             <?php
                             $user_gender = $_SESSION['user-data']['user_gender'];
                             if ($user_gender) {
-                                $user_gender = "Nam";
+                                $user_gender = "Male";
                             } else {
-                                $user_gender = "Nữ";
+                                $user_gender = "Female";
                             }
                             echo $user_gender;
                             ?>
                         </p>
                     </div>
                     <div class="profile__row">
-                        <p class="profile__text">Ngày sinh:
+                        <p class="profile__text">Date of birth:
                             <?php
                             $date = new DateTime($_SESSION['user-data']['user_date_of_birth']);
                             echo $date->format('d-m-Y');
@@ -97,8 +97,8 @@ foreach ($all_user_data as $key => $value) {
                         </p>
                     </div>
                     <div class="profile__row">
-                        <a href="edit.php" class="button button--small button--green">Chỉnh sửa</a>
-                        <a href="logout.php" id="logout-btn" class="button button--small button--red">Đăng xuất</a>
+                        <a href="edit.php" class="button button--small button--green">Edit profile</a>
+                        <a href="logout.php" id="logout-btn" class="button button--small button--red">Sign out</a>
                     </div>
                 </div>
                 <div class="user-list">

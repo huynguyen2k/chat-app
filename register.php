@@ -24,12 +24,12 @@
         $user_data = $user_object->get_user_data_by_username();
 
         if ($user_data != null) {
-            $error_message = '<p class="form-control__message form-control__message--error">Tài khoản này đã được đăng ký</p>';
+            $error_message = '<p class="form-control__message form-control__message--error">This username already exists</p>';
         } else {
             if ($user_object->save_data()) {
-                $success_message = '<p class="form-control__message form-control__message--success">Bạn đã đăng ký thành công</p>';
+                $success_message = '<p class="form-control__message form-control__message--success">You have successfully registered</p>';
             } else {
-                $error_message = '<p class="form-control__message form-control__message--error">Xảy ra lỗi trong quá trình đăng ký</p>';
+                $error_message = '<p class="form-control__message form-control__message--error">Error in register process</p>';
             }
         }
     }

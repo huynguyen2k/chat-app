@@ -46,7 +46,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sửa thông tin cá nhân</title>
+    <title>Edit profile</title>
 
     <!-- link css -->
     <link rel="stylesheet" href="assets/css/reset.css">
@@ -64,34 +64,34 @@
                     <img src="assets/images/register-img.jpg" alt="Image">
                 </div>
                 <div class="form-control__content">
-                    <h3 class="form-control__title">Thông tin cá nhân</h3>
+                    <h3 class="form-control__title">User profile</h3>
                     <div class="form-control__row">
-                        <label class="form-control__label">Ảnh đại diện</label>
+                        <label class="form-control__label">Avatar</label>
                         <div class="form-control__profile-image">
                             <img src="<?php echo $user_profile ?>" alt="User image">
                             <input type="file" name="userProfile">
                         </div>
                     </div>
                     <div class="form-control__row">
-                        <label class="form-control__label">Họ tên</label>
+                        <label class="form-control__label">Full name</label>
                         <input class="form-control__input-data" type="text" name="userName" required value="<?php echo $user_name ?>">
                     </div>
                     <div class="form-control__row">
-                        <label class="form-control__label">Giới tính</label>
+                        <label class="form-control__label">Gender</label>
                         <div class="form-control__wrap-data">
-                            <label for="male">Nam</label>
+                            <label for="male">Male</label>
                             <input type="radio" name="userGender" value="1" id="male" required <?php echo ($user_gender == 1 ? "checked" : "") ?>>
-                            <label for="female">Nữ</label>
+                            <label for="female">Female</label>
                             <input type="radio" name="userGender" value="0" id="female" required <?php echo ($user_gender == 0 ? "checked" : "") ?>>
                         </div>
                     </div>
                     <div class="form-control__row">
-                        <label class="form-control__label" for="userDateOfBirth">Ngày sinh</label>
+                        <label class="form-control__label" for="userDateOfBirth">Date of birth</label>
                         <input class="form-control__input-data" type="date" name="userDateOfBirth" id="userDateOfBirth" value="<?php echo $user_date_of_birth ?>" required>
                     </div>
                     <div class="form-control__row text-center">
-                        <input class="button button--green" type="submit" value="Lưu lại">
-                        <a class="button button--red" href="chatroom.php">Quay về</a>
+                        <input class="button button--green" type="submit" value="Save">
+                        <a class="button button--red" href="chatroom.php">Cancel</a>
                     </div>
                 </div>
             </form>
