@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th5 18, 2021 lúc 04:17 PM
+-- Thời gian đã tạo: Th5 28, 2021 lúc 09:34 AM
 -- Phiên bản máy phục vụ: 10.4.18-MariaDB
 -- Phiên bản PHP: 7.3.27
 
@@ -61,6 +61,7 @@ CREATE TABLE `user` (
   `user_username` varchar(250) NOT NULL,
   `user_password` varchar(250) NOT NULL,
   `user_profile` varchar(250) NOT NULL,
+  `phone_number` varchar(20) NOT NULL,
   `user_gender` tinyint(1) NOT NULL,
   `user_date_of_birth` date NOT NULL,
   `user_status` tinyint(1) NOT NULL,

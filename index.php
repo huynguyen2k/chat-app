@@ -88,6 +88,9 @@
                     <div class="form-control__row">
                         <input class="form-control__input-data" type="password" id="userPassword" name="userPassword" placeholder="Password" required>
                     </div>
+                    <div class="form-control__row">
+                        <a href="forgot.php" style="color: blue">Forgot password?</a>
+                    </div>
                     <div class="form-control__row text-center">
                         <input class="button button--green" type="submit" value="Login">
                         <a class="button button--red" href="register.php">Sign up</a>

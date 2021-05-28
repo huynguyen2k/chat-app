@@ -7,6 +7,7 @@
         private $user_password;
         private $user_profile;
         private $user_gender;
+        private $phone_number;
         private $user_date_of_birth;
         private $user_status;
         private $user_created_on;
@@ -72,6 +73,14 @@
             return $this->user_gender;
         }
 
+        public function setPhoneNumber($phone_number) {
+            $this->phone_number = $phone_number;
+        }
+
+        public function getPhoneNumber() {
+            return $this->phone_number;
+        }
+
         public function setUserDateOfBirth($user_date_of_birth) {
             $this->user_date_of_birth = $user_date_of_birth;
         }
@@ -112,6 +121,7 @@
 
             return $user_data;
         }   
+
         public function setUserToken($user_token) {
             $this->user_token = $user_token;
         }
@@ -130,13 +140,13 @@
         
         public function save_data() {
             $query = "INSERT INTO `user`(`user_name`, `user_username`, `user_password`, `user_profile`,
-            `user_gender`, `user_date_of_birth`, `user_status`, `user_created_on`)
-            VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+            `phone_number`, `user_gender`, `user_date_of_birth`, `user_status`, `user_created_on`)
+            VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             $stmt = $this->connect->prepare($query);
 
-            $stmt->bind_param("ssssisis", $this->user_name, $this->user_username, $this->user_password,
-            $this->user_profile, $this->user_gender, $this->user_date_of_birth,
+            $stmt->bind_param("sssssisis", $this->user_name, $this->user_username, $this->user_password,
+            $this->user_profile, $this->phone_number, $this->user_gender, $this->user_date_of_birth,
             $this->user_status, $this->user_created_on);
 
             if ($stmt->execute()) {
@@ -146,6 +156,20 @@
             }
 
             $stmt->close();
+        }
+
+        function updatePasswordByUsername() {
+            $password = md5($this->user_password);
+
+            $query = "UPDATE `user` SET `user_password` = ? WHERE `user_username` = ?";
+
+            $stmt = $this->connect->prepare($query);
+            $stmt->bind_param("ss", $password, $this->user_username);
+
+            if ($stmt->execute()) {
+                return true;
+            }
+            return false;
         }
 
         public function updateUserStatus() {

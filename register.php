@@ -15,6 +15,7 @@
         $user_object->setUserUsername($_POST["userUsername"]);
         $user_object->setUserPassword(md5($_POST["userPassword"]));
         $user_object->setUserStatus(0);
+        $user_object->setPhoneNumber($_POST['phoneNumber']);
         $user_object->setUserProfile("assets/images/user.png");
         $user_object->setUserCreatedOn(date("Y-m-d H:i:s"));
         $user_object->setUserDateOfBirth($_POST['userDateOfBirth']);
@@ -80,6 +81,9 @@
                     </div>
                     <div class="form-control__row">
                         <input class="form-control__input-data" type="password" id="userConfirmPassword" placeholder="Confirm password" required>
+                    </div>
+                    <div class="form-control__row">
+                        <input class="form-control__input-data" type="text" id="phoneNumber" name="phoneNumber" placeholder="Enter phone number" required>
                     </div>
                     <div class="form-control__row">
                         <label class="form-control__label">Choose gender</label>
