@@ -154,4 +154,16 @@ img {
   background-color: var(--dark-error-color);
 }
 
+.login-bg {
+  background: url("../images/login-bg.gif") no-repeat top/cover !important;
+}
+
+.header {
+  margin-bottom: 40px;
+  color: white;
+  font-size: 1.4rem;
+  text-align: center;
+  line-height: 1.4;
+}
+
 /*# sourceMappingURL=base.css.map */

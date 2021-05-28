@@ -41,7 +41,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng ký</title>
+    <title>Register</title>
 
     <!-- link css -->
     <link rel="stylesheet" href="assets/css/reset.css">
@@ -68,35 +68,35 @@
                         }
                     ?>
 
-                    <h3 class="form-control__title" id="register-form-title">Đăng ký</h3>
+                    <h3 class="form-control__title" id="register-form-title">Sign up for Account</h3>
                     <div class="form-control__row">
-                        <input class="form-control__input-data" type="text" name="userName" placeholder="Nhập họ tên" required>
+                        <input class="form-control__input-data" type="text" name="userName" placeholder="Your full name" required>
                     </div>
                     <div class="form-control__row">
-                        <input class="form-control__input-data" type="text" name="userUsername" placeholder="Nhập tài khoản" required>
+                        <input class="form-control__input-data" type="text" name="userUsername" placeholder="Enter username" required>
                     </div>
                     <div class="form-control__row">
-                        <input class="form-control__input-data" type="password" id="userPassword" name="userPassword" placeholder="Nhập mật khẩu" required>
+                        <input class="form-control__input-data" type="password" id="userPassword" name="userPassword" placeholder="Enter password" required>
                     </div>
                     <div class="form-control__row">
-                        <input class="form-control__input-data" type="password" id="userConfirmPassword" placeholder="Nhập lại mật khẩu" required>
+                        <input class="form-control__input-data" type="password" id="userConfirmPassword" placeholder="Confirm password" required>
                     </div>
                     <div class="form-control__row">
-                        <label class="form-control__label">Chọn giới tính</label>
+                        <label class="form-control__label">Choose gender</label>
                         <div class="form-control__wrap-data">
-                            <label for="male">Nam</label>
+                            <label for="male">Male</label>
                             <input type="radio" name="userGender" value="1" id="male" required>
-                            <label for="female">Nữ</label>
+                            <label for="female">Female</label>
                             <input type="radio" name="userGender" value="0" id="female" required>
                         </div>
                     </div>
                     <div class="form-control__row">
-                        <label class="form-control__label" for="userDateOfBirth">Chọn ngày sinh</label>
+                        <label class="form-control__label" for="userDateOfBirth">Date of birth</label>
                         <input class="form-control__input-data" type="date" name="userDateOfBirth" id="userDateOfBirth" required>
                     </div>
                     <div class="form-control__row text-center">
-                        <input class="button button--green" type="submit" value="Đăng ký">
-                        <a class="button button--red" href="index.php">Đăng nhập</a>
+                        <input class="button button--green" type="submit" value="Register">
+                        <a class="button button--red" href="index.php">Login</a>
                     </div>
                 </div>
             </form>
